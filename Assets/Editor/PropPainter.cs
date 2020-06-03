@@ -77,7 +77,7 @@ public class PropPainter : EditorWindow
             // draw points
             foreach (Vector2 p in randomPoints)
             {
-                Vector3 worldPosition = hit.point + hitTangent * p.x + hitBiTangent * p.y;
+                Vector3 worldPosition = hit.point + (hitTangent * p.x + hitBiTangent * p.y) * radius;
                 DrawSphere(worldPosition);
             }
             
