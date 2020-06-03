@@ -47,7 +47,10 @@ public class PropPainter : EditorWindow
     {
         so.Update();
         EditorGUILayout.PropertyField(propRadius);
+        propRadius.floatValue = propRadius.floatValue.AtLeast(1);
         EditorGUILayout.PropertyField(propSpawnCount);
+        propSpawnCount.intValue = propSpawnCount.intValue.AtLeast(1);
+        
         if (so.ApplyModifiedProperties())
         {
             GenerateRandomPoints();
