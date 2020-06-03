@@ -50,6 +50,7 @@ public class PropPainter : EditorWindow
         EditorGUILayout.PropertyField(propSpawnCount);
         if (so.ApplyModifiedProperties())
         {
+            GenerateRandomPoints();
             SceneView.RepaintAll();
         }
     }
