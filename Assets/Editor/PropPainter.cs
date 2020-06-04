@@ -70,6 +70,8 @@ public class PropPainter : EditorWindow
     {
         Handles.SphereHandleCap(-1, pos,Quaternion.identity, 0.1f, EventType.Repaint);
     }
+    
+    
 
     void DuringSceneGUI(SceneView sceneView)
     {
@@ -78,10 +80,33 @@ public class PropPainter : EditorWindow
         Transform camTransform = sceneView.camera.transform;
 
         //Ray ray = new Ray(camTransform.position, camTransform.forward);
+        
+        // repaint the scene view whenever the mouse moves
         if (Event.current.type == EventType.MouseMove)
         {
             sceneView.Repaint();
         }
+        
+        // is the alt key being held down
+        bool holdingAlt = (Event.current.modifiers & EventModifiers.Alt) != 0;
+        
+        // only change the radius if the event type is scroll wheel, but
+        // not holding down alt key
+        // detect if the scroll wheel changed and change the radius
+        if (Event.current.type == EventType.ScrollWheel && !holdingAlt)
+        {
+            // I don't really care of the value but more the direction. Strange that this does 
+            // return an int??? but a float since it is either -1 or 1
+            float scrollDirection = Mathf.Sign(Event.current.delta.y);
+            
+            so.Update();
+            propRadius.floatValue += scrollDirection * 0.5f;
+            so.ApplyModifiedProperties();
+            Repaint();
+            Event.current.Use();
+
+        }
+        
         Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 
         // cast a ray from camera to surface and project a normal from that hit point
