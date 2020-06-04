@@ -151,7 +151,7 @@ public class PropPainter : EditorWindow
             
             // overlay the disc on to the surface
             // number of points on the circle
-            const int circleDetail = 64;
+            const int circleDetail = 128;
             
             Vector3[] ringPoints = new Vector3[circleDetail];
             // get points around the circle (with an extra to draw the last one to the first
@@ -165,7 +165,7 @@ public class PropPainter : EditorWindow
 
                 if (Physics.Raycast(r, out RaycastHit circleHit))
                 {
-                    ringPoints[i] = circleHit.point;
+                    ringPoints[i] = circleHit.point + circleHit.normal * 0.02f;
                 }
                 else
                 {
