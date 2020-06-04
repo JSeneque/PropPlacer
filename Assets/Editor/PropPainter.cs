@@ -11,10 +11,12 @@ public class PropPainter : EditorWindow
 
     public float radius = 2f;
     public int spawnCount = 8;
-
+    public GameObject spawnPrefab = null;
+    
     private SerializedObject so;
     private SerializedProperty propRadius;
     private SerializedProperty propSpawnCount;
+    private SerializedProperty propSpawnPrefab;
 
     private Vector2[] randomPoints;
     
@@ -25,6 +27,7 @@ public class PropPainter : EditorWindow
         so = new SerializedObject(this);
         propRadius = so.FindProperty("radius");
         propSpawnCount = so.FindProperty("spawnCount");
+        propSpawnPrefab = so.FindProperty("spawnPrefab");
         GenerateRandomPoints();
         SceneView.duringSceneGui += DuringSceneGUI;
     }
@@ -51,6 +54,7 @@ public class PropPainter : EditorWindow
         propRadius.floatValue = propRadius.floatValue.AtLeast(1);
         EditorGUILayout.PropertyField(propSpawnCount);
         propSpawnCount.intValue = propSpawnCount.intValue.AtLeast(1);
+        EditorGUILayout.PropertyField(propSpawnPrefab);
         
         if (so.ApplyModifiedProperties())
         {
@@ -176,7 +180,6 @@ public class PropPainter : EditorWindow
             //draw circle
             Handles.DrawAAPolyLine(ringPoints);
             
-            //Handles.DrawWireDisc(hit.point, hit.normal, radius);
         }
 
         
