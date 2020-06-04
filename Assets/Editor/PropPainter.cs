@@ -88,6 +88,7 @@ public class PropPainter : EditorWindow
                 if (Physics.Raycast(pointRay, out RaycastHit pointHit))
                 {
                     DrawSphere(pointHit.point);
+                    Handles.DrawAAPolyLine(pointHit.point, pointHit.point+ pointHit.normal);
                 }
             }
             
