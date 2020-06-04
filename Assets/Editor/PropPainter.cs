@@ -100,7 +100,7 @@ public class PropPainter : EditorWindow
             float scrollDirection = Mathf.Sign(Event.current.delta.y);
             
             so.Update();
-            propRadius.floatValue += scrollDirection * 0.5f;
+            propRadius.floatValue *= 1f + scrollDirection * 0.05f;
             so.ApplyModifiedProperties();
             Repaint();
             Event.current.Use();
