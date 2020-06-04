@@ -46,6 +46,13 @@ public class PropPainter : EditorWindow
             randomPoints[i] = Random.insideUnitCircle;
         }
     }
+
+    void TrySpawnObjects()
+    {
+        if (spawnPrefab == null)
+            return;
+        
+    }
     
     void OnGUI()
     {
@@ -62,13 +69,19 @@ public class PropPainter : EditorWindow
             SceneView.RepaintAll();
         }
         
-        // detects when the left mouse button is clicked in the editor window
+        // check for a spacebar press
+        if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Space)
+        {
+            TrySpawnObjects();
+        }
+        
+        // detects when  the left mouse button is clicked in the editor window
         if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
         {
             GUI.FocusControl(null);
             Repaint();
         }
-    }
+    } 
 
     void DrawSphere(Vector3 pos)
     {
