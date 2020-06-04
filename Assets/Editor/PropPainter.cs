@@ -116,18 +116,22 @@ public class PropPainter : EditorWindow
             Vector3 hitNormal = hit.normal;
             Vector3 hitTangent = Vector3.Cross(hitNormal, camTransform.up).normalized;
             Vector3 hitBiTangent = Vector3.Cross(hitNormal, hitTangent);
+
+            Ray GetTangentRay(Vector2 tangentSpacePosition)
+            {
+                Vector3 rayOrigin = hit.point + (hitTangent * tangentSpacePosition.x + hitBiTangent * tangentSpacePosition.y) * radius;
+                // offset the points 
+                rayOrigin += hitNormal * 2;
+                Vector3 rayDirection = -hitNormal;
+                
+                return new Ray(rayOrigin, rayDirection);
+            }
             
             // draw points
             foreach (Vector2 p in randomPoints)
             {
-                // create a ray to get the point on the disc
-                Vector3 rayOrigin = hit.point + (hitTangent * p.x + hitBiTangent * p.y) * radius;
-                // offset the points 
-                rayOrigin += hitNormal * 2;
-                Vector3 rayDirection = -hitNormal;
-
                 // finding a point on the surface
-                Ray pointRay = new Ray(rayOrigin, rayDirection);
+                Ray pointRay = GetTangentRay(p);
                 if (Physics.Raycast(pointRay, out RaycastHit pointHit))
                 {
                     // draw at the hit point on the surface
@@ -144,7 +148,35 @@ public class PropPainter : EditorWindow
             Handles.color = Color.red;
             Handles.DrawAAPolyLine(4, hit.point, hit.point + hitTangent);
             Handles.color = Color.white;
-            Handles.DrawWireDisc(hit.point, hit.normal, radius);
+            
+            // overlay the disc on to the surface
+            // number of points on the circle
+            const int circleDetail = 64;
+            
+            Vector3[] ringPoints = new Vector3[circleDetail];
+            // get points around the circle (with an extra to draw the last one to the first
+            for (int i = 0; i < circleDetail; i++)
+            {
+                const float TAU = 6.28318530718f;
+                float t = i / (float)circleDetail;
+                float angleRadian = t * TAU;
+                Vector2 direction = new Vector2(Mathf.Cos(angleRadian), Mathf.Sin(angleRadian));
+                Ray r =  GetTangentRay(direction);
+
+                if (Physics.Raycast(r, out RaycastHit circleHit))
+                {
+                    ringPoints[i] = circleHit.point;
+                }
+                else
+                {
+                    ringPoints[i] = r.origin;
+                }
+            }
+            
+            //draw circle
+            Handles.DrawAAPolyLine(ringPoints);
+            
+            //Handles.DrawWireDisc(hit.point, hit.normal, radius);
         }
 
         
