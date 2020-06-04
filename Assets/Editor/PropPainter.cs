@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.Rendering;
 
 public class PropPainter : EditorWindow
 {
@@ -65,8 +66,9 @@ public class PropPainter : EditorWindow
 
     void DuringSceneGUI(SceneView sceneView)
     {
-        Transform camTransform = sceneView.camera.transform;
+        Handles.zTest = CompareFunction.LessEqual;
         
+        Transform camTransform = sceneView.camera.transform;
         
         Ray ray = new Ray(camTransform.position, camTransform.forward);
 
@@ -82,6 +84,8 @@ public class PropPainter : EditorWindow
             foreach (Vector2 p in randomPoints)
             {
                 Vector3 rayOrigin = hit.point + (hitTangent * p.x + hitBiTangent * p.y) * radius;
+                // offset the points 
+                rayOrigin += hitNormal * 2;
                 Vector3 rayDirection = -hitNormal;
                 Ray pointRay = new Ray(rayOrigin, rayDirection);
 
