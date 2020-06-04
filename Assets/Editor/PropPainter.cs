@@ -81,8 +81,14 @@ public class PropPainter : EditorWindow
             // draw points
             foreach (Vector2 p in randomPoints)
             {
-                Vector3 worldPosition = hit.point + (hitTangent * p.x + hitBiTangent * p.y) * radius;
-                DrawSphere(worldPosition);
+                Vector3 rayOrigin = hit.point + (hitTangent * p.x + hitBiTangent * p.y) * radius;
+                Vector3 rayDirection = -hitNormal;
+                Ray pointRay = new Ray(rayOrigin, rayDirection);
+
+                if (Physics.Raycast(pointRay, out RaycastHit pointHit))
+                {
+                    DrawSphere(pointHit.point);
+                }
             }
             
             // draw the coordinate system
