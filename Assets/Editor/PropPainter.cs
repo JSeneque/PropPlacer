@@ -76,8 +76,13 @@ public class PropPainter : EditorWindow
         Handles.zTest = CompareFunction.LessEqual;
         
         Transform camTransform = sceneView.camera.transform;
-        
-        Ray ray = new Ray(camTransform.position, camTransform.forward);
+
+        //Ray ray = new Ray(camTransform.position, camTransform.forward);
+        if (Event.current.type == EventType.MouseMove)
+        {
+            sceneView.Repaint();
+        }
+        Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 
         // cast a ray from camera to surface and project a normal from that hit point
         if(Physics.Raycast(ray, out RaycastHit hit))
