@@ -46,11 +46,22 @@ public class PropPainter : EditorWindow
             randomPoints[i] = Random.insideUnitCircle;
         }
     }
+    
 
-    void TrySpawnObjects()
+    void TrySpawnObjects(List<RaycastHit> hitPoints)
     {
         if (spawnPrefab == null)
             return;
+
+        foreach (RaycastHit hit in hitPoints)
+        {
+            GameObject spawnObject = (GameObject) PrefabUtility.InstantiatePrefab(spawnPrefab);
+            Undo.RegisterCreatedObjectUndo(spawnObject, "Spawn Objects");
+            spawnObject.transform.position = hit.point;
+            spawnObject.transform.rotation = Quaternion.LookRotation(hit.normal);
+            
+        }
+         
         
     }
     
@@ -68,13 +79,7 @@ public class PropPainter : EditorWindow
             GenerateRandomPoints();
             SceneView.RepaintAll();
         }
-        
-        // check for a spacebar press
-        if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Space)
-        {
-            TrySpawnObjects();
-        }
-        
+
         // detects when  the left mouse button is clicked in the editor window
         if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
         {
@@ -143,6 +148,8 @@ public class PropPainter : EditorWindow
                 
                 return new Ray(rayOrigin, rayDirection);
             }
+
+            List<RaycastHit> hitPoints = new List<RaycastHit>();
             
             // draw points
             foreach (Vector2 p in randomPoints)
@@ -151,10 +158,17 @@ public class PropPainter : EditorWindow
                 Ray pointRay = GetTangentRay(p);
                 if (Physics.Raycast(pointRay, out RaycastHit pointHit))
                 {
+                    hitPoints.Add(pointHit);
                     // draw at the hit point on the surface
                     DrawSphere(pointHit.point);
                     Handles.DrawAAPolyLine(pointHit.point, pointHit.point+ pointHit.normal);
                 }
+            }
+            
+            // check for a spacebar press to spawn objects
+            if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Space)
+            {
+                TrySpawnObjects(hitPoints);
             }
             
             // draw the coordinate system
@@ -196,5 +210,6 @@ public class PropPainter : EditorWindow
         }
 
         
+
     }
 }
