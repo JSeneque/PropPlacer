@@ -62,6 +62,7 @@ public class PropPainter : EditorWindow
         if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
         {
             GUI.FocusControl(null);
+            Repaint();
         }
     }
 
