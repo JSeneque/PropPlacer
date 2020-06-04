@@ -57,6 +57,12 @@ public class PropPainter : EditorWindow
             GenerateRandomPoints();
             SceneView.RepaintAll();
         }
+        
+        // detects when the left mouse button is clicked in the editor window
+        if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
+        {
+            GUI.FocusControl(null);
+        }
     }
 
     void DrawSphere(Vector3 pos)
@@ -83,14 +89,17 @@ public class PropPainter : EditorWindow
             // draw points
             foreach (Vector2 p in randomPoints)
             {
+                // create a ray to get the point on the disc
                 Vector3 rayOrigin = hit.point + (hitTangent * p.x + hitBiTangent * p.y) * radius;
                 // offset the points 
                 rayOrigin += hitNormal * 2;
                 Vector3 rayDirection = -hitNormal;
-                Ray pointRay = new Ray(rayOrigin, rayDirection);
 
+                // finding a point on the surface
+                Ray pointRay = new Ray(rayOrigin, rayDirection);
                 if (Physics.Raycast(pointRay, out RaycastHit pointHit))
                 {
+                    // draw at the hit point on the surface
                     DrawSphere(pointHit.point);
                     Handles.DrawAAPolyLine(pointHit.point, pointHit.point+ pointHit.normal);
                 }
