@@ -67,6 +67,9 @@ public class PropPainter : EditorWindow
             spawnObject.transform.rotation = rot;
 
         }
+        
+        // give us a new set of points ready for the next placement
+        GenerateRandomPoints();
          
         
     }
