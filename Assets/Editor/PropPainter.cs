@@ -58,9 +58,12 @@ public class PropPainter : EditorWindow
             GameObject spawnObject = (GameObject) PrefabUtility.InstantiatePrefab(spawnPrefab);
             Undo.RegisterCreatedObjectUndo(spawnObject, "Spawn Objects");
             spawnObject.transform.position = hit.point;
+
+            float randomAngleDegree = Random.value * 360;
+            Quaternion randomRotation = Quaternion.Euler(0f, 0f, randomAngleDegree);
             
             // rotate the prefab on the X Axis
-            Quaternion rot = Quaternion.LookRotation(hit.normal) * Quaternion.Euler(90f, 0f, 0f) ;
+            Quaternion rot = Quaternion.LookRotation(hit.normal) * (randomRotation * Quaternion.Euler(90f, 0f, 0f)) ;
             spawnObject.transform.rotation = rot;
 
         }
